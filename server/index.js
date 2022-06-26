@@ -1,5 +1,6 @@
 const next = require("next")
 const express = require("express")
+const endpoints = require('./routes/endpoints-template')
 
 const dev = process.env.NODE_ENV !== "production"
 const app = next({dev})
@@ -9,6 +10,7 @@ const { parse } = require("url")
 app.prepare().then(() => {
     const server = express()
     server.use(express.json())
+    server.use('/api/endpoints-template', endpoints)
 
     server.get('*', (req, res) => {
         const parsedUrl = parse(req.url, true)
