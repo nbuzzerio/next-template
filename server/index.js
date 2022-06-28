@@ -1,6 +1,7 @@
 const next = require("next")
 const express = require("express")
 const endpoints = require('./routes/endpoints-template')
+require('../database/index')
 
 const dev = process.env.NODE_ENV !== "production"
 const app = next({dev})
