@@ -1,26 +1,8 @@
 const express = require("express");
-const Joi = require("joi");
 const mongoose = require("mongoose");
 const router = express.Router();
 
-const exampleSchema = new mongoose.Schema({
-  firstName: { type: String, required: true, minlength: 2, maxlength: 255 },
-  lastName: {
-    type: String,
-    validate: {
-      isAsync: true,
-      validator: function (v, callback) {
-        setTimeout(() => {
-          const result = v && v.length >= 5 && v.length <= 255;
-          callback(result);
-        }, 5000);
-      },
-    }, //custom validator example. Remove isAsync and callback arg for sync
-  },
-  age: Number,
-});
-
-const Example = mongoose.model("example", exampleSchema);
+const { Example, validate } = require("../../database/models/exampleModels");
 
 router.get("/", async (req, res) => {
   //Basic regular expressions
@@ -57,10 +39,12 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   console.log(req.params.id);
-  const { error } = validateExample(req.body);
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const example = await Example.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  const example = await Example.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
 
   if (!example)
     return res.status(404).send("The example with the given ID does not exist");
@@ -79,10 +63,12 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   console.log(req.params.id);
-  const { error } = validateExample(req.body);
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const example = await Example.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  const example = await Example.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
 
   if (!example)
     return res.status(404).send("The example with the given ID does not exist");
@@ -98,15 +84,5 @@ router.delete("/:id", async (req, res) => {
 
   res.send(example);
 });
-
-function validateExample(example) {
-  const schema = Joi.object({
-    firstName: Joi.string().min(2).max(225).required(),
-    lastName: Joi.string().min(2).max(255).required(),
-    age: Joi.number(),
-  });
-
-  return schema.validate(example);
-}
 
 module.exports = router;
