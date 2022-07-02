@@ -1,6 +1,7 @@
 const next = require("next");
 const express = require("express");
 const endpoints = require("./routes/endpoints-template");
+const auth = require("./routes/auth");
 const users = require("./routes/users");
 require("../database/index");
 
@@ -15,6 +16,7 @@ app.prepare().then(() => {
   const server = express();
   server.use(express.json());
   server.use("/api/endpoints-template", endpoints);
+  server.use("/api/auth", auth);
   server.use("/api/users", users);
 
   server.get("*", (req, res) => {
