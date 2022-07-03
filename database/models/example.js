@@ -31,4 +31,4 @@ const exampleSchema = new mongoose.Schema({
   }
 
   exports.Example = Example
-  exports.Example = validate
+  exports.validate = validate

@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 
-const { Example, validate } = require("../../database/models/exampleModels");
+const { Example, validate } = require("../../database/models/example");
 
 router.get("/", async (req, res) => {
   //Basic regular expressions
@@ -29,35 +29,11 @@ router.post("/", async (req, res) => {
   try {
     const result = await example.save();
     console.log(result);
-  } catch (exception) {
-    for (field in exception.errors) {
-      console.log(exception.errors[field].message);
+  } catch (ex) {
+    for (field in ex.errors) {
+      console.log(ex.errors[field].message);
     }
   }
-  res.send(example);
-});
-
-router.put("/:id", async (req, res) => {
-  console.log(req.params.id);
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  const example = await Example.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-
-  if (!example)
-    return res.status(404).send("The example with the given ID does not exist");
-
-  res.send(example);
-});
-
-router.delete("/:id", async (req, res) => {
-  const example = await Example.findByIdAndRemove(req.params.id);
-
-  if (!example)
-    return res.status(404).send("The example with the given ID does not exist");
-
   res.send(example);
 });
 

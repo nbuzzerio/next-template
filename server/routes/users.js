@@ -3,13 +3,19 @@ const { User, validate } = require("../../database/models/users");
 const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth");
+
+router.get("/me", auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select("name");
+
+  res.send(user);
+});
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.findOne({ email: req.body.email });
-  console.log("attempt: ", user);
   if (user) return res.status(400).send("User already registered.");
 
   const { name, email, password } = req.body;
@@ -22,17 +28,20 @@ router.post("/", async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(password, salt);
 
-  res.send({ name, email });
-
+  const token = user.generateAuthToken();
   try {
     const result = await user.save();
-    console.log(result);
+
+    res.header("x-auth-token", token).send({
+      _id: result._id,
+      name: result.name,
+      email: result.email,
+    });
   } catch (ex) {
     for (field in ex.errors) {
       console.log(ex.errors[field].message);
     }
   }
-  res.send(result);
 });
 
 module.exports = router;
