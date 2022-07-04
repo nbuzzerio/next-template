@@ -4,6 +4,7 @@ const endpoints = require("./routes/example");
 const auth = require("./routes/auth");
 const users = require("./routes/users");
 const products = require("./routes/products");
+const error = require("./middleware/error");
 require("../database/index");
 require('dotenv').config()
 
@@ -26,6 +27,7 @@ app.prepare().then(() => {
   server.use("/api/auth", auth);
   server.use("/api/users", users);
   server.use("/api/products", products);
+  server.use(error)
 
   server.get("*", (req, res) => {
     const parsedUrl = parse(req.url, true);
