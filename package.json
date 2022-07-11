@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon server",
+    "dev": "set NODE_ENV=dev&& nodemon server",
     "build": "next build",
-    "start": "next start",
+    "start": "set NODE_ENV=prod&& node server",
     "lint": "next lint",
-    "test": "jest --watchAll"
+    "test": "set NODE_ENV=dev&& jest --watchAll --verbose"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

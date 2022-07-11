@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
+const db = process.env.NODE_ENV === "dev" ? process.env.testdb : process.env.db;
+
 module.exports = function (logger) {
   mongoose
-    .connect(process.env.db, {
+    .connect(db, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
