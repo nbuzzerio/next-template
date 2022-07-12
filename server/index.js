@@ -23,4 +23,6 @@ app.prepare().then(() => {
     if (err) throw err;
     logger.info(`> Ready on http://localhost:${process.env.PORT || 3000}`);
   });
+  
+  module.exports = server;
 });
