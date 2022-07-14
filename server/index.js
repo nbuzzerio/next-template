@@ -10,7 +10,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const { parse } = require("url");
 
-app.prepare().then(() => {
+// app.prepare().then(() => {
   const server = express();
   require("./startup/routes")(server);
 
@@ -19,10 +19,11 @@ app.prepare().then(() => {
     handle(req, res, parsedUrl);
   });
 
-  server.listen(process.env.PORT || 3000, (err) => {
+  const listener = server.listen(process.env.PORT || 3000, (err) => {
     if (err) throw err;
     logger.info(`> Ready on http://localhost:${process.env.PORT || 3000}`);
   });
-  
-  module.exports = server;
-});
+
+// });
+
+module.exports = listener;

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const db = process.env.NODE_ENV === "dev" ? process.env.testdb : process.env.db;
+const db = process.env.NODE_ENV === "test" ? process.env.testdb : process.env.db;
 
 module.exports = function (logger) {
   mongoose
