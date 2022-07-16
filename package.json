@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "set NODE_ENV=production&& node server",
     "lint": "next lint",
-    "test": "set NODE_ENV=test&& jest --watchAll --verbose --detectOpenHandles"
+    "test": "set NODE_ENV=test&& jest --watch --verbose --detectOpenHandles"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

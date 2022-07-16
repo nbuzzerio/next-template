@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const request = require("supertest");
 const { Products } = require("../../../database/models/products");
+const { User } = require("../../../database/models/users");
 
 let server;
 
@@ -38,11 +39,66 @@ describe("api/products", () => {
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("name", product.name);
     });
-    
-    it("should return 404 if an invalid id is passed", async () => {
 
+    it("should return 404 if an invalid id is passed", async () => {
       const res = await request(server).get(`/api/products/1`);
       expect(res.status).toBe(404);
+    });
+  });
+
+  describe("POST /", () => {
+    let token;
+    let name;
+
+    const apiCall = async () => {
+      return await request(server)
+        .post("/api/products/")
+        .set("x-auth-token", token)
+        .send({ name, sku: 199, stock: 30 });
+    };
+
+    beforeEach(() => {
+      name = "product1";
+      token = new User().generateAuthToken();
+    });
+
+    it("should return a 401 if user is not logged in", async () => {
+      token = "";
+      const res = await apiCall();
+
+      expect(res.status).toBe(401);
+    });
+
+    it("should return a 400 if product is less than 5 characters", async () => {
+      name = "123";
+      const res = await apiCall();
+
+      expect(res.status).toBe(400);
+      expect(res.text).toBe('"name" length must be at least 5 characters long');
+    });
+
+    it("should return a 400 if product is more than 50 characters", async () => {
+      name = Array(52).join("x");
+      const res = await apiCall();
+
+      expect(res.status).toBe(400);
+      expect(res.text).toBe(
+        '"name" length must be less than or equal to 50 characters long'
+      );
+    });
+
+    it("should save the product if it is valid", async () => {
+      await apiCall();
+      const product = await Products.find({ name: "product1" });
+      console.log(product[0]);
+      expect(product).not.toBe(null);
+    });
+
+    it("should return the product if it is valid", async () => {
+      const res = await apiCall();
+
+      expect(res.body).toHaveProperty("_id");
+      expect(res.body).toHaveProperty("name", "product1");
     });
   });
 });

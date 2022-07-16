@@ -40,12 +40,11 @@ router.post(
 
     try {
       const result = await products.save();
-      console.log(result);
       res.send(products);
     } catch (ex) {
       for (field in ex.errors) {
         console.log(ex.errors[field].message);
-        res.status(400).send(ex.errors[field].message);
+        res.status(500).send(ex.errors[field].message);
       }
     }
   })
