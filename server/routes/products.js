@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const asyncMiddleware = require("../middleware/async");
+const validateObjectId = require("../middleware/validateObjectId");
 
 const { Products, validate } = require("../../database/models/products");
 
@@ -12,6 +13,19 @@ router.get(
   asyncMiddleware(async (req, res) => {
     const result = await Products.find({});
     res.send(result);
+  })
+);
+
+router.get(
+  "/:id",
+  validateObjectId,
+  asyncMiddleware(async (req, res) => {
+    const product = await Products.findByIdAndRemove(req.params.id);
+
+    if (!product)
+      return res.status(404).send("The product with that id does not exist");
+
+    res.send(product);
   })
 );
 
