@@ -90,7 +90,6 @@ describe("api/products", () => {
     it("should save the product if it is valid", async () => {
       await apiCall();
       const product = await Products.find({ name: "product1" });
-      console.log(product[0]);
       expect(product).not.toBe(null);
     });
 
