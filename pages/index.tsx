@@ -1,6 +1,8 @@
 import Head from 'next/head'
 
 export default function Home() {
+
+
   return (
     <div className='bg-blue-600 h-screen'>
       <Head>
@@ -14,7 +16,7 @@ export default function Home() {
           NextJS App Template
         </h1>
 
-        
+
       </main>
     </div>
   )

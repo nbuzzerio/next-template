@@ -1,18 +1,33 @@
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useAuth, useUpdateAuth } from "../AuthContext/AuthContext";
 
 function Header() {
   const [dropDown, setDropDown] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const auth = useAuth();
+  const setAuth = useUpdateAuth();
+
+  const checkAuthToken = () => {
+    const cookies = document.cookie.split(';')
+    cookies.forEach((cookie) => {
+      if (cookie.includes('x-auth-token=')) setAuth(cookie.slice(14))
+    })
+  }
+  const router = useRouter()
 
   useEffect(() => {
+
+    checkAuthToken()
+
     document.querySelector('.menu-btn-wrapper').addEventListener('click', (e) => {
       document.querySelector('.menu-btn').classList.add('clicked')
     })
 
     if (dropDown && !loaded) setLoaded(true);
-    
-  }, [dropDown]);
+
+  }, [dropDown, auth]);
 
   const handleDropDown = () => {
     if (!dropDown) {
@@ -24,6 +39,11 @@ function Header() {
 
     setDropDown(!dropDown);
   };
+
+  const handleLogOut = () => {
+    document.cookie = 'x-auth-token=';
+    setAuth('')
+  }
 
   return (
     <>
@@ -45,13 +65,26 @@ function Header() {
 
           <div className="home-wrapper lg:absolute lg:w-full px-10 flex justify-center">
             <Link href="/">
-              <a title="home" className="uppercase text-7xl text-black font-extrabold">
+              <a title="home" className="uppercase text-4xl md:text-6xl lg:text-7xl text-black font-extrabold">
                 TEXT LOGO
               </a>
             </Link>
           </div>
 
           <div className="right-header-wrapper flex items-center nav-item px-10 z-10">
+            <div className="login-wrapper flex">
+              {!auth && router.pathname !== '/login' && <>
+                <Link href='/login'>
+                  <a className="sign-in hidden md:flex bg-white shadow-inner px-3 mx-2">Sign In</a>
+                </Link>
+                <Link href='/login?signup=true'>
+                  <a className="sign-in hidden md:flex bg-white shadow-inner px-3 mx-2">Sign Up</a>
+                </Link>
+              </>}
+              {auth && <>
+                <button className="sign-in hidden md:flex bg-white shadow-inner px-3 mx-2" onClick={handleLogOut}>Log Out</button>
+              </>}
+            </div>
             <div className="menu-btn-wrapper flex items-center" onClick={handleDropDown}>
               <div className="uppercase text-black text-2xl lg:text-3xl hidden sm:block tracking-[0.07rem]"></div>
               <div className="menu-btn w-[40px] sm:w-[50px] flex flex-col cursor-pointer">
@@ -63,9 +96,8 @@ function Header() {
           </div>
           {loaded && (
             <div
-              className={`dropdown-wrapper ${
-                dropDown ? "animate-open" : "animate-close"
-              } fixed h-[calc(100vh-80px)] lg:h-[calc(100vh-140px)] w-full top-[80px] lg:top-[140px] flex justify-end hd:right-[calc((100vw-1937px)/2)]`}
+              className={`dropdown-wrapper ${dropDown ? "animate-open" : "animate-close"
+                } fixed h-[calc(100vh-80px)] lg:h-[calc(100vh-140px)] w-full top-[80px] lg:top-[140px] flex justify-end hd:right-[calc((100vw-1937px)/2)]`}
             >
               <div
                 className="dropdown-overlay w-0 lg:w-7/12"

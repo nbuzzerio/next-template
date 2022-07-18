@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
       _id: result._id,
       name: result.name,
       email: result.email,
+      token: token
     });
   } catch (ex) {
     for (field in ex.errors) {
