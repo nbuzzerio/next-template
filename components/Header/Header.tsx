@@ -3,16 +3,23 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAuth, useUpdateAuth } from "../AuthContext/AuthContext";
 
+import jwt from 'jsonwebtoken'
+
 function Header() {
   const [dropDown, setDropDown] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [userName, setUserName] = useState('')
   const auth = useAuth();
   const setAuth = useUpdateAuth();
 
   const checkAuthToken = () => {
     const cookies = document.cookie.split(';')
     cookies.forEach((cookie) => {
-      if (cookie.includes('x-auth-token=')) setAuth(cookie.slice(14))
+      if (cookie.includes('x-auth-token=')) {
+        const token = cookie.slice(14)
+        setAuth(token)
+        if (token) setUserName(jwt.decode(token).name)
+      }
     })
   }
   const router = useRouter()
@@ -56,7 +63,7 @@ function Header() {
               <a href="/">
                 <img
                   className="px-2 h-7 lg:h-10 cursor-pointer"
-                  src="/images/"
+                  src="/images/logo.svg"
                   alt="logo image"
                 />
               </a>
@@ -82,7 +89,10 @@ function Header() {
                 </Link>
               </>}
               {auth && <>
-                <button className="sign-in hidden md:flex bg-white shadow-inner px-3 mx-2" onClick={handleLogOut}>Log Out</button>
+                <div className="loggedIn-wrapper flex flex-col items-center">
+                  {userName && <div className="userName mb-2 uppercase text-sm">Hi, {userName}</div>}
+                  <button className="sign-in flex bg-white shadow-inner px-3 mx-2" onClick={handleLogOut}>Log Out</button>
+                </div>
               </>}
             </div>
             <div className="menu-btn-wrapper flex items-center" onClick={handleDropDown}>

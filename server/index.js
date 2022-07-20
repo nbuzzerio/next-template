@@ -15,6 +15,9 @@ let listener;
 app.prepare().then(() => {
   const server = express();
   require("./startup/routes")(server);
+  require("./startup/production")(server);
+  if (!dev) require("./startup/rateLimiter")(server);
+  
 
   server.get("*", (req, res) => {
     const parsedUrl = parse(req.url, true);
