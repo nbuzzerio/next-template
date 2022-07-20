@@ -131,6 +131,16 @@ function Header() {
                     </a>
                   </Link>
                 </li>
+                <li className="uppercase tracking-[.2rem]">
+                  <Link href="/groups">
+                    <a
+                      className="text-green-400 hover:text-red-700 text-2xl xs:text-3xl lg:text-4xl"
+                      onClick={handleDropDown}
+                    >
+                      Groups
+                    </a>
+                  </Link>
+                </li>
               </ul>
             </div>
           )}

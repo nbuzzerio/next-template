@@ -22,14 +22,28 @@ const userSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 1024,
   },
+  groups: {
+    type: [
+      {
+        groupName: {
+          type: String,
+        },
+        groupId: { type: mongoose.Schema.Types.ObjectId, ref: "Groups" },
+      },
+    ],
+    sparse: true,
+  },
   isAdmin: {
     type: Boolean,
   },
-})
+});
 
 userSchema.methods.generateAuthToken = function () {
-  return jwt.sign({ _id: this._id, isAdmin: this.isAdmin, name: this.name }, process.env.jwtPrivateKey);
-}
+  return jwt.sign(
+    { _id: this._id, isAdmin: this.isAdmin, name: this.name },
+    process.env.jwtPrivateKey
+  );
+};
 
 const User = mongoose.model("User", userSchema);
 

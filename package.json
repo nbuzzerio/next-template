@@ -32,7 +32,9 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/jest": "^28.1.6",
     "@types/jquery": "^3.5.14",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.14",
     "autoprefixer": "^10.4.7",
