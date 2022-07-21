@@ -90,4 +90,38 @@ describe("api/groups", () => {
       expect(userOne.groups).toHaveLength(1);
     });
   });
+
+  describe("PUT /join/:id", () => {
+    let userOne;
+    let userTwo;
+    let group_id;
+
+    const apiJoinCall = async () => {
+      return await request(server)
+        .post(`/api/groups/join/${group_id}`)
+        .set("x-auth-token", token);
+    };
+
+    beforeEach(async () => {
+      userOne = await User.findOne({ name: "john" });
+      userTwo = await User.findOne({ name: "jane" });
+      let res = await apiCall();
+      expect(res.status).toBe(200);
+      userOne = await User.findOne({ name: "john" });
+      group_id = res.body._id;
+    });
+    
+    it("should add a user to the group if given a group id", async () => {
+      token = await userTwo.generateAuthToken()
+      res = await apiJoinCall();
+      expect(res.status).toBe(200);
+      expect(res.body.members).toHaveLength(2);
+    });
+    
+    it("should return an error if the user is already a member", async () => {
+      res = await apiJoinCall();
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('User is already a member.');
+    });
+  });
 });
