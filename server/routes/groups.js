@@ -2,12 +2,78 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const auth = require("../middleware/auth");
-const admin = require("../middleware/admin");
 const asyncMiddleware = require("../middleware/async");
-const validateObjectId = require("../middleware/validateObjectId");
+const crypto = require("crypto");
 
-const { Groups, validate } = require("../../database/models/groups");
+const {
+  Groups,
+  validate,
+  algorithm,
+  key,
+  iv,
+} = require("../../database/models/groups");
 const { User } = require("../../database/models/users");
+
+router.get(
+  "/invite/:id",
+  auth,
+  asyncMiddleware(async (req, res) => {
+    const group = await Groups.findById({ _id: req.params.id });
+    if (!group) return res.status(404).send({ error: "Group not found." });
+
+    const member = await User.findById({ _id: req.user._id });
+    if (!member) return res.status(400).send({ error: "User is not valid." });
+
+    const currentMems = group.members.filter((member) =>
+      member.member_id.equals(req.user._id)
+    );
+    if (currentMems.length === 0)
+      return res
+        .status(403)
+        .send({ error: "User must be a member to get an invite code." });
+
+    try {
+      const inviteKey = group.generateInviteKey();
+
+      res.send({ inviteKey });
+    } catch (ex) {
+      for (field in ex.errors) {
+        console.log(ex.errors[field].message);
+        res.status(500).send(ex.errors[field].message);
+      }
+    }
+  })
+);
+router.get(
+  "/timed-invite/:id",
+  auth,
+  asyncMiddleware(async (req, res) => {
+    const group = await Groups.findById({ _id: req.params.id });
+    if (!group) return res.status(404).send({ error: "Group not found." });
+
+    const member = await User.findById({ _id: req.user._id });
+    if (!member) return res.status(400).send({ error: "User is not valid." });
+
+    const currentMems = group.members.filter((member) =>
+      member.member_id.equals(req.user._id)
+    );
+    if (currentMems.length === 0)
+      return res
+        .status(403)
+        .send({ error: "User must be a member to get an invite code." });
+
+    try {
+      const inviteKey = group.generateInviteKey(true);
+
+      res.send({ inviteKey });
+    } catch (ex) {
+      for (field in ex.errors) {
+        console.log(ex.errors[field].message);
+        res.status(500).send(ex.errors[field].message);
+      }
+    }
+  })
+);
 
 router.post(
   "/",
@@ -46,24 +112,35 @@ router.post(
   "/join/:id",
   auth,
   asyncMiddleware(async (req, res) => {
-    const group = await Groups.findById({ _id: req.params.id });
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+    const decrypted =
+      decipher.update(req.params.id, "hex", "utf8") + decipher.final("utf8");
+    const decryptedPayload = JSON.parse(decrypted);
+
+    const expiration = new Date(decryptedPayload.expiration);
+    if (expiration < new Date())
+      return res.status(403).send({ error: "Invite code has expired." });
+
+    const group = await Groups.findById({ _id: decryptedPayload.id });
     if (!group) return res.status(404).send({ error: "Group not found." });
 
     const newcomer = await User.findById({ _id: req.user._id });
     if (!newcomer) return res.status(400).send({ error: "User is not valid." });
 
-    for (const member of group.members) {
-      if (member.member_id.equals(req.user._id)) return res.status(400).send({ error: "User is already a member." });
-    }
+    const currentMem = group.members.filter((member) =>
+      member.member_id.equals(req.user._id)
+    );
+    if (currentMem.length > 0)
+      return res.status(400).send({ error: "User is already a member." });
 
     try {
       group.members.push({
         member_id: req.user._id,
         member_name: req.user.name,
       });
-      newcomer.groups.push({groupName: group.name, groupId: group._id})
-      await group.save()
-      await newcomer.save()
+      newcomer.groups.push({ groupName: group.name, groupId: group._id });
+      await group.save();
+      await newcomer.save();
 
       res.send(group);
     } catch (ex) {

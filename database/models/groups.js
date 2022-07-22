@@ -1,5 +1,11 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
+const crypto = require("crypto");
+require("dotenv").config("./.env");
+
+const key = crypto.randomBytes(32);
+const iv = crypto.randomBytes(16);
+const algorithm = "aes256";
 
 const groupsSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 5, maxlength: 50 },
@@ -13,6 +19,22 @@ const groupsSchema = new mongoose.Schema({
     },
   ],
 });
+
+groupsSchema.methods.generateInviteKey = function (temp) {
+  let timestamp = new Date();
+  let expiration = temp
+    ? new Date(timestamp.setMinutes(timestamp.getMinutes() + 30))
+    : new Date(3000, 0, 1);
+
+  const text = JSON.stringify({
+    id: this._id,
+    expiration,
+  });
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  const encrypted = cipher.update(text, "utf8", "hex") + cipher.final("hex");
+
+  return encrypted;
+};
 
 const Groups = mongoose.model("groups", groupsSchema);
 
@@ -28,3 +50,6 @@ function validate(groups) {
 
 exports.Groups = Groups;
 exports.validate = validate;
+exports.key = key;
+exports.iv = iv;
+exports.algorithm = algorithm;
