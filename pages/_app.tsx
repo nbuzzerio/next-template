@@ -1,6 +1,6 @@
-import '../styles/main.scss'
-import Layout from '../components/Layout'
-import AuthContext from '../components/AuthContext'
+import '@/styles/main.scss'
+import Layout from '@/components/Layout'
+import AuthContext from '@/components/AuthContext'
 
 function App({ Component, pageProps }) {
 

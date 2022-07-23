@@ -1,8 +1,8 @@
 import Head from 'next/head'
-import LoginForm from '../components/loginForm';
+import LoginForm from '@/components/loginForm';
 import { useRouter } from "next/router"
 import { useEffect } from 'react';
-import { useAuth } from '../components/AuthContext/AuthContext';
+import { useAuth } from '@/components/AuthContext/AuthContext';
 
 export default function Groups() {
 

@@ -12,7 +12,7 @@ const { parse } = require("url");
 
 let listener;
 
-// app.prepare().then(() => {
+app.prepare().then(() => {
   const server = express();
   require("./startup/routes")(server);
   require("./startup/production")(server);
@@ -29,6 +29,6 @@ let listener;
     logger.info(`> Ready on http://localhost:${process.env.PORT || 3000}`);
   });
 
-// });
+});
 
 module.exports = listener;

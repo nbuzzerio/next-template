@@ -6,6 +6,10 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["*"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -22,8 +26,9 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "server/index.js"  ],
+    "**/*.tsx",
+    "jest.setup.js", 
+    "server/index.js"  ],
   "exclude": [
     "node_modules"
   ]
