@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 // jest.config.js
 const nextJest = require('next/jest')
 
@@ -22,4 +24,6 @@ const customJestConfig = {
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig)
+if (process.env.NODE_ENV === 'testUI') {
+    module.exports = createJestConfig(customJestConfig)
+}

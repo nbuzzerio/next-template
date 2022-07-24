@@ -7,7 +7,7 @@ let server;
 
 describe("api/products", () => {
   beforeEach(async () => {
-    server = require("../../../server");
+    server = require("../../../server/index.test_server");
     await Products.deleteMany({});
   });
   afterEach(async () => {

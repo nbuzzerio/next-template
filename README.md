@@ -36,5 +36,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 
 ## Testing
-
-When running tests please comment out the wrapping app block in server/index.js to allow the linstener to be exported
+Testing express server must be done separate from testing frontend UI. Please run scripts testServer and testUI, respectively.

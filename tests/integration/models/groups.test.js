@@ -39,7 +39,7 @@ describe("api/groups", () => {
   };
 
   beforeEach(async () => {
-    server = require("../../../server");
+    server = require("../../../server/index.test_server");
     await Groups.collection.deleteMany({});
     await User.collection.deleteMany({});
     await User.collection.insertMany([
