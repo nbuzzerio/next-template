@@ -3,8 +3,8 @@ const {
   algorithm,
   key,
   iv,
-} = require("../../../database/models/groups");
-require("dotenv").config("./.env");
+} = require("../../../../database/models/groups");
+
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 

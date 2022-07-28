@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const request = require("supertest");
-const { Products } = require("../../../database/models/products");
-const { User } = require("../../../database/models/users");
+const { Products } = require("../../../../database/models/products");
+const { User } = require("../../../../database/models/users");
 
 let server;
 
 describe("api/products", () => {
   beforeEach(async () => {
-    server = require("../../../server/index.test_server");
+    server = require("../../../../server/index.test_server");
     await Products.deleteMany({});
   });
   afterEach(async () => {

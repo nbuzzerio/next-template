@@ -1,15 +1,20 @@
 const mongoose = require("mongoose");
 const request = require("supertest");
-const { Products } = require("../../../database/models/products");
-const { User } = require("../../../database/models/users");
+const { Products } = require("../../../../database/models/products");
+const { User } = require("../../../../database/models/users");
 
 let server;
 
 describe("auth middleware", () => {
+  console.log(
+    "\x1b[32m",
+    "\x1b[1m",
+    "////////////////////////// TEST START //////////////////////////"
+  );
   let token;
 
   beforeEach(async () => {
-    server = require("../../../server");
+    server = require("../../../../server/index.test_server");
     await Products.deleteMany({});
   });
   afterEach(async () => {
@@ -33,11 +38,11 @@ describe("auth middleware", () => {
 
     expect(res.status).toBe(401);
   });
-  
+
   it("should return 400 if token is invalid", async () => {
     token = "invalid token";
     const res = await apiCall();
-    
+
     expect(res.status).toBe(400);
   });
 

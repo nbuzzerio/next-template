@@ -6,5 +6,4 @@ describe("Navbar", (() => {
         cy.findByText(/sign in/i).click()
         cy.findByRole('heading', {name: /log in template/i}).should('exist')
     })
-
 }))

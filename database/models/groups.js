@@ -1,7 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
-require("dotenv").config("./.env");
 
 const key = crypto.randomBytes(32);
 const iv = crypto.randomBytes(16);

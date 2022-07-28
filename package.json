@@ -12,8 +12,8 @@
     "cypress:start": "start-server-and-test 'npm run start:test' 3000 cypress:open",
     "cypress:build": "npm run build:test && npm run cypress:start",
     "lint": "next lint",
-    "testServer": "set NODE_ENV=test&& jest --watch --verbose --detectOpenHandles",
-    "testUI": "set NODE_ENV=testUI&& jest --watch --verbose --detectOpenHandles",
+    "test:server": "set NODE_ENV=testServer&& jest --watch --verbose --detectOpenHandles -- /express",
+    "test:ui": "set NODE_ENV=testUI&& jest --watch --verbose --detectOpenHandles -- /ui",
     "coverage": "set NODE_ENV=test&& jest --watch --verbose --detectOpenHandles --coverage"
   },
   "dependencies": {
