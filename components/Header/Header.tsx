@@ -12,11 +12,11 @@ function Header() {
   const auth = useAuth();
   const setAuth = useUpdateAuth();
 
-  const checkAuthToken = () => {
+  const checkAuthToken = async () => {
     const cookies = document.cookie.split(';')
     cookies.forEach((cookie) => {
       if (cookie.includes('x-auth-token=')) {
-        const token = cookie.slice(14)
+        const token = cookie.trim().slice(13)
         setAuth(token)
         if (token) setUserName(jwt.decode(token).name)
       }
@@ -121,6 +121,18 @@ function Header() {
                 <li className="text-green-400 text-xl xs:text-2xl lg:text-3xl pb-10 uppercase tracking-[.2rem]">
                   Menu
                 </li>
+                {!auth && router.pathname !== '/login' && <>
+                  <li onClick={handleDropDown}>
+                    <Link href='/login'>
+                      <a className="sign-in md:hidden bg-white shadow-inner px-3 mx-2 w-20">Sign In</a>
+                    </Link>
+                  </li>
+                  <li onClick={handleDropDown}>
+                    <Link href='/login?signup=true'>
+                      <a className="sign-in md:hidden bg-white shadow-inner px-3 mx-2">Sign Up</a>
+                    </Link>
+                  </li>
+                </>}
                 <li className="uppercase tracking-[.2rem]">
                   <Link href="/">
                     <a

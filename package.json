@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "set NODE_ENV=production&& node server",
     "build:test": "set NODE_ENV=test&& next build",
-    "start:test": "set NODE_ENV=test&& next start",
+    "start:test": "set NODE_ENV=test&& node server",
     "cypress:open": "env-cmd -f .env.test.local ./node_modules/.bin/cypress open",
     "cypress:start": "start-server-and-test 'npm run start:test' 3000 cypress:open",
     "cypress:build": "npm run build:test && npm run cypress:start",

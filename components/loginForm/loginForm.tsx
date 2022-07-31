@@ -27,7 +27,6 @@ const LoginForm: NextPage = () => {
   const router = useRouter()
 
   useEffect(() => {
-    console.log(router.query)
     if (router.query?.signup) setSignUp(true)
     return () => { }
   }, [])
